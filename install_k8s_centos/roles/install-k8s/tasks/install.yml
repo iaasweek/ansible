@@ -1,0 +1,28 @@
+- name: Adicionando o Repositorio do Docker
+  shell: curl -fSsl https://download.docker.com/linux/centos/docker-ce.repo > /etc/yum.repos.d/docker-ce.repo
+
+- name: Instalando o Docker
+  yum:
+      name: docker-ce
+      state: latest
+
+- name: Adicionando o repo do k8s
+  yum_repository:
+      name: kubernetes.repo 
+      baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+      gpgcheck: yes
+      repo_gpgcheck: yes
+      gpgkey: 
+        - https://packages.cloud.google.com/yum/doc/yum-key.gpg
+        - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+      enabled: yes
+      state: present
+
+- name: Install k8s packages
+  apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - kubelet
+    - kubeadm
+    - kubectl
