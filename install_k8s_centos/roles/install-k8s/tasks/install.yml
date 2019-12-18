@@ -34,6 +34,20 @@
 - name: Adicionando o Repositorio do Docker
   shell: curl -fSsl https://download.docker.com/linux/centos/docker-ce.repo > /etc/yum.repos.d/docker-ce.repo
 
+- name: Adicionando o repo do kubernetes no YUM
+  yum_repository:
+      name: kubernetes
+      file: kubernetes
+      description: kubernetes
+      baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+      gpgcheck: yes
+      repo_gpgcheck: yes
+      gpgkey: 
+        - https://packages.cloud.google.com/yum/doc/yum-key.gpg 
+        - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+      enabled: yes
+      state: present
+
 - name: Instalando o Docker
   yum:
       name: docker-ce
@@ -43,19 +57,6 @@
   systemd:
       name: docker
       state: started
-
-- name: Adicionando o repo do k8s no YUM
-  yum_repository:
-      name: kubernetes.repo 
-      description: 'Repositorio do Kubernetes para Centos7'
-      baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
-      gpgcheck: yes
-      repo_gpgcheck: yes
-      gpgkey: 
-        https://packages.cloud.google.com/yum/doc/yum-key.gpg
-        https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-      enabled: yes
-      state: present
 
 - name: Install k8s packages
   yum:
