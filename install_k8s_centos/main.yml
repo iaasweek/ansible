@@ -7,7 +7,7 @@
     raw: yum update -y
   
   - name: 'instalando o python'
-    raw: yum install python -y
+    raw: yum install python2 python -y
   
   roles:
   - { role: install-k8s, tags: ["install_k8s_role"]}

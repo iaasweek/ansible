@@ -16,6 +16,16 @@
     regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
     replace: '# \1'
 
+- name: Permitindo o Forward no Centos
+  shell: echo 1 > /proc/sys/net/ipv4/ip_forward
+
+- name: gravando o forward persistente a reinicios
+  sysctl:
+      name: net.ipv4.ip_forward
+      reload: yes
+      state: present 
+      value: '1'
+
 - name: Adicionando o Repositorio do Docker
   shell: curl -fSsl https://download.docker.com/linux/centos/docker-ce.repo > /etc/yum.repos.d/docker-ce.repo
 
@@ -24,7 +34,7 @@
       name: docker-ce
       state: latest
 
-- name: Adicionando o repo do k8s
+- name: Adicionando o repo do k8s no YUM
   yum_repository:
       name: kubernetes.repo 
       baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
@@ -37,7 +47,7 @@
       state: present
 
 - name: Install k8s packages
-  apt:
+  yum:
     name: "{{ packages }}"
   vars:
     packages:
