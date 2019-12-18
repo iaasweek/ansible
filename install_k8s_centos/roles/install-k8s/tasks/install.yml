@@ -7,6 +7,11 @@
     name: firewalld
     state: removed
 
+- name: instalando o iptables
+  yum:
+    name: iptables
+    state: present
+
 - name: desativando o swap 
   shell: swapoff -a
 
@@ -34,15 +39,21 @@
       name: docker-ce
       state: latest
 
+- name: iniciando o servico do Docker
+  systemd:
+      name: docker
+      state: started
+
 - name: Adicionando o repo do k8s no YUM
   yum_repository:
       name: kubernetes.repo 
+      description: 'Repositorio do Kubernetes para Centos7'
       baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
       gpgcheck: yes
       repo_gpgcheck: yes
       gpgkey: 
-        - https://packages.cloud.google.com/yum/doc/yum-key.gpg
-        - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+        https://packages.cloud.google.com/yum/doc/yum-key.gpg
+        https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
       enabled: yes
       state: present
 

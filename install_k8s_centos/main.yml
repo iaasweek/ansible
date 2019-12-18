@@ -1,6 +1,6 @@
 - hosts: all
   become: yes
-  user: centos
+  user: apavanello
   gather_facts: no
   pre_tasks:
   - name: 'atualizando repo'
@@ -14,12 +14,12 @@
 
 - hosts: k8s-master
   become: yes
-  user: centos
+  user: apavanello
   roles:
   - { role: create-cluster, tags: ["create_cluster_role"]}
 
 - hosts: k8s-workers
   become: yes
-  user: centos
+  user: apavanello
   roles:
   - { role: join-workers, tags: ["join_workers_role"]}
