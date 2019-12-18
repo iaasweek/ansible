@@ -1,3 +1,21 @@
+- name: desativando o SeLinux
+  selinux:
+    state: disabled
+
+- name: desativando o Firewalld 
+  yum:
+    name: firewalld
+    state: removed
+
+- name: desativando o swap 
+  shell: swapoff -a
+
+- name: removendo o swap 
+  replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+    replace: '# \1'
+
 - name: Adicionando o Repositorio do Docker
   shell: curl -fSsl https://download.docker.com/linux/centos/docker-ce.repo > /etc/yum.repos.d/docker-ce.repo
 

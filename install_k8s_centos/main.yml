@@ -3,32 +3,11 @@
   user: centos
   gather_facts: no
   pre_tasks:
-  - name: desativando o SeLinux
-    selinux:
-      state: disabled
-
-  - name: desativando o Firewalld 
-    yum:
-      name: firewalld
-      state: removed
-  
-  - name: desativando o swap 
-    shell: swapoff -a
-    
-  - name: removendo o swap 
-    replace:
-      path: /etc/fstab
-      regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
-      replace: '# \1'
-
   - name: 'atualizando repo'
-    yum:
-      update_only: latest
+    raw: yum update -y
   
   - name: 'instalando o python'
-    yum:
-        name: python 
-        state: latest
+    raw: yum install python -y
   
   roles:
   - { role: install-k8s, tags: ["install_k8s_role"]}
