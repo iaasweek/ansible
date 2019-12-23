@@ -31,4 +31,4 @@
   become: yes
   user: mmagalha
   roles:
-  - { role: join-workers, tags: ["join_workers_role"]}  
+  - { role: join-workers, tags: ["join_workers_role"]} 
