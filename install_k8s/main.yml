@@ -1,23 +1,34 @@
-- hosts: all
-  become: yes
-  user: ubuntu
+- hosts: pve
+  user: root
   gather_facts: no
   pre_tasks:
   - name: 'atualizando repo'
     raw: 'apt-get update'
   - name: 'instalando o python'
-    raw: 'apt-get install -y python'
+    raw: 'apt-get install -y python3 python3-proxmoxer'
   roles:
-  - { role: install-k8s,	tags: ["install_k8s_role"]}
+  - { role: install-vms, tags: ["install_pve_vms"]}
+
+- hosts: k8s
+  become: yes
+  user: mmagalha
+  gather_facts: no
+  pre_tasks:
+  - name: 'atualizando repo'
+    raw: 'apt-get update'
+  - name: 'instalando o python'
+    raw: 'apt-get install -y python3'
+  roles:
+  - { role: install-k8s, tags: ["install_k8s_role"]}
 
 - hosts: k8s-master
   become: yes
-  user: ubuntu
+  user: mmagalha
   roles:
-  - { role: create-cluster,	tags: ["create_cluster_role"]}
+  - { role: create-cluster, tags: ["create_cluster_role"]}
 
 - hosts: k8s-workers
   become: yes
-  user: ubuntu
+  user: mmagalha
   roles:
-  - { role: join-workers,	tags: ["join_workers_role"]}
+  - { role: join-workers, tags: ["join_workers_role"]}  

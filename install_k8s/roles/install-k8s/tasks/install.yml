@@ -1,5 +1,11 @@
-- name: Instalando o Docker
-  shell: curl -fsSL https://get.docker.com | bash -
+- name: Adicionando as chaves do repo do Docker
+  shell: https://download.docker.com/linux/ubuntu/gpg
+  state: present
+
+- name: Adicionando repositório do Docker
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu  $(lsb_release -cs) stable"
+    state: present
 
 - name: Adicionando as chaves repo k8s no apt
   apt_key:
@@ -11,11 +17,42 @@
     repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
     state: present
 
-- name: Install k8s packages
+- name: Install docker and k8s packages
   apt:
     name: "{{ packages }}"
   vars:
     packages:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
     - kubelet
     - kubeadm
     - kubectl
+
+- name: Copy docker.json
+  copy:
+    src: /data/DevOps/ansible/install_k8s/roles/create-cluster/files/docker.json
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    backup: yes    
+  register: kubeadmin_init
+
+- name: restart systemd
+  systemd:
+    daemon_reload: yes 
+
+- name: reload service docker, in all cases
+  systemd:
+    name: docker
+    state: reloaded
+
+- name: Disable SWAP since kubernetes can't work with swap enabled (1/2)
+  shell: |
+    swapoff -a
+
+- name: Disable SWAP in fstab since kubernetes can't work with swap enabled (2/2)
+  replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+    replace: '# \1' 
