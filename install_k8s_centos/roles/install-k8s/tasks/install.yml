@@ -1,0 +1,68 @@
+- name: desativando o SeLinux
+  selinux:
+    state: disabled
+
+- name: desativando o Firewalld 
+  yum:
+    name: firewalld
+    state: removed
+
+- name: instalando o iptables
+  yum:
+    name: iptables
+    state: present
+
+- name: desativando o swap 
+  shell: swapoff -a
+
+- name: removendo o swap 
+  replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+    replace: '# \1'
+
+- name: Permitindo o Forward no Centos
+  shell: echo 1 > /proc/sys/net/ipv4/ip_forward
+
+- name: gravando o forward persistente a reinicios
+  sysctl:
+      name: net.ipv4.ip_forward
+      reload: yes
+      state: present 
+      value: '1'
+
+- name: Adicionando o Repositorio do Docker
+  shell: curl -fSsl https://download.docker.com/linux/centos/docker-ce.repo > /etc/yum.repos.d/docker-ce.repo
+
+- name: Adicionando o repo do kubernetes no YUM
+  yum_repository:
+      name: kubernetes
+      file: kubernetes
+      description: kubernetes
+      baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+      gpgcheck: yes
+      repo_gpgcheck: yes
+      gpgkey: 
+        - https://packages.cloud.google.com/yum/doc/yum-key.gpg 
+        - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+      enabled: yes
+      state: present
+
+- name: Instalando o Docker
+  yum:
+      name: docker-ce
+      state: latest
+
+- name: iniciando o servico do Docker
+  systemd:
+      name: docker
+      state: started
+
+- name: Install k8s packages
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - kubelet
+    - kubeadm
+    - kubectl
