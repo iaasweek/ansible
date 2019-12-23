@@ -21,13 +21,13 @@
   roles:
   - { role: install-k8s, tags: ["install_k8s_role"]}
 
-- hosts: k8s-master
+- hosts: k8s_master
   become: yes
   user: mmagalha
   roles:
   - { role: create-cluster, tags: ["create_cluster_role"]}
 
-- hosts: k8s-workers
+- hosts: k8s_workers
   become: yes
   user: mmagalha
   roles:

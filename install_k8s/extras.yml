@@ -1,4 +1,4 @@
-- hosts: k8s-master
+- hosts: k8s_master
   become: yes
   user: mmagalha
   roles:

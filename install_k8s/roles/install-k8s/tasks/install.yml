@@ -1,6 +1,7 @@
 - name: Adicionando as chaves do repo do Docker
-  shell: https://download.docker.com/linux/ubuntu/gpg
-  state: present
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
 
 - name: Adicionando repositório do Docker
   apt_repository:

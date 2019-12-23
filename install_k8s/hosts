@@ -5,13 +5,13 @@ pve01
 172.32.0.221
 172.32.0.22[2:4]
 
-[k8s-master]
+[k8s_master]
 172.32.0.221
 
-[k8s-workers]
+[k8s_workers]
 172.32.0.22[2:4]
 
-[k8s-workers:vars]
+[k8s_workers:vars]
 K8S_MASTER_NODE_IP=172.32.0.221
 K8S_API_SECURE_PORT=6443
 
