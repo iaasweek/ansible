@@ -1,0 +1,12 @@
+---
+# vars file for install-vms
+pve_host: pve01
+pve_user: root@pam
+pve_pass: "{{ lookup('env','PVE_PASS') }}"
+vm_id:
+- 1
+- 2
+- 3
+- 4
+vm_name: "k8s0"
+
