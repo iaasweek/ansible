@@ -5,7 +5,7 @@
 
 - name: Adicionando repositório do Docker
   apt_repository:
-    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu  $(lsb_release -cs) stable"
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu  bionic stable"
     state: present
 
 - name: Adicionando as chaves repo k8s no apt
@@ -32,7 +32,7 @@
 
 - name: Copy docker.json
   copy:
-    src: /data/DevOps/ansible/install_k8s/roles/create-cluster/files/docker.json
+    src: install_k8s/roles/create-cluster/files/docker.json
     dest: /etc/docker/daemon.json
     owner: root
     group: root
