@@ -8,6 +8,8 @@
   - name: 'instalando o python'
     raw: 'apt-get install -y python'
   roles:
+  - { role: update-all-packages, tags: ["update_all_packages"] }
+  - { role: reboot, tags: ["reboot"] }
   - { role: install-k8s, tags: ["install_k8s_role"]}
 
 - hosts: k8s-master
