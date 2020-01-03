@@ -1,0 +1,3 @@
+- name: Configure weavenet networking.
+  shell: kubectl apply -f {{ default_kubernetes_cni_weavenet_manifestUrl }}
+  register: weavenet_result

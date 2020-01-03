@@ -1,0 +1,36 @@
+---
+# tasks file for install-vm
+- name: Clone VMs
+  proxmox_kvm:
+    api_user    : "{{ pve_user }}"
+    api_password: "{{ pve_pass }}"
+    api_host    : "{{ pve_host }}"
+    clone       : ubnttpl   # The VM source
+    name        : k8s0{{ item }}  # The target VM name
+    newid       : 100{{ item }}
+    node        : pve01
+    storage     : Local-01
+    format      : qcow2
+    timeout     : 500
+#    state       : started
+  loop: "{{ vm_id }}"
+
+- name: Set VM IP
+  command:
+    qm set 100{{ item }} --ipconfig0 ip=172.32.0.22{{ item }}/24,gw=172.32.0.254
+  loop: "{{ vm_id }}"
+  ignore_errors: False
+  
+- name: start VMs
+  proxmox_kvm:
+    api_user    : "{{ pve_user }}"
+    api_password: "{{ pve_pass }}"
+    api_host    : "{{ pve_host }}"
+    vmid        : 100{{ item }}
+    state       : started
+  loop: "{{ vm_id }}"
+
+- name: Wait 600 seconds for target connection to become reachable/usable
+  wait_for_connection:
+        delay: 600
+

@@ -1,0 +1,5 @@
+- hosts: k8s_master
+  become: yes
+  user: mmagalha
+  roles:
+  - { role: install-extra, tags: ["intall_extra"]} 
