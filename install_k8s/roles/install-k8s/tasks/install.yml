@@ -32,7 +32,7 @@
 
 - name: Copy docker.json
   copy:
-    src: /home/mmagalha/DevOps/ansible/install_k8s/roles/create-cluster/files/docker.json
+    src: /data/DevOps/ansible/install_k8s/roles/create-cluster/files/docker.json
     dest: /etc/docker/daemon.json
     owner: root
     group: root
