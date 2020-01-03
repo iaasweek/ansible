@@ -5,7 +5,7 @@
 
 - name: Adicionando repositório do Docker
   apt_repository:
-    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu  $(lsb_release -cs) stable"
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu  bionic stable"
     state: present
 
 - name: Adicionando as chaves repo k8s no apt

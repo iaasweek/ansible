@@ -7,11 +7,12 @@
     backup: yes    
   register: metallb_install
 
-- name: Install MetalLB config.
-  shell: kubectl apply -f https://raw.githubusercontent.com/google/metallb/v0.8.3/manifests/metallb.yaml
-  register: metallb_install
-
 - name: Install MetalLB.
   shell: kubectl apply -f https://raw.githubusercontent.com/google/metallb/v0.8.3/manifests/metallb.yaml
   register: metallb_install
+
+- name: Install MetalLB config.
+  shell: kubectl apply -n metallb-system-f https://raw.githubusercontent.com/google/metallb/v0.8.3/manifests/metallb.yaml
+  register: metallb_install  
+
 
