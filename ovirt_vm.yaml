@@ -1,0 +1,47 @@
+---
+- name: Create VM on RHV
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+
+  pre_tasks:  
+    - name: teste
+      ovirt_auth:
+        hostname: ovirt.example.com
+        username: admin@internal
+        password: 123456
+        ca_file: ca.pem
+
+      # Run VM with cloud init:
+      ovirt_vms:
+          name: k8s01
+          template: ubnt-18.04-srv-x64
+          cluster: Default
+          cpu: 4
+          memory: 8GiB
+          high_availability: true
+          cloud_init:
+            nic_boot_protocol: static
+            nic_ip_address: 10.34.60.86
+            nic_netmask: 255.255.252.0
+            nic_gateway: 10.34.63.254
+            nic_name: eth1
+            nic_on_boot: true
+            host_name: mycloudbr.local
+            custom_script: |
+              write_files:
+              - content: |
+                  Hello, world!
+                path: /tmp/greeting.txt
+                permissions: '0644'
+            user_name: root
+            root_password: ncc1701
+            state: present
+            wait: yes
+
+  post_tasks:
+      # Revoke the SSO token returned from previous task
+      ovirt_auth:
+        state: absent
+        ovirt_auth: "{{ ovirt_auth }}"
