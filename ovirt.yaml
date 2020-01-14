@@ -1,0 +1,48 @@
+---
+- name: Clone VMs
+  ovirt_auth:
+    hostname: "{{ engine_fqdn }}"
+    username: "{{ engine_user }}"
+    password: "{{ password }}"
+    ca_file: "{{ engine_cafile | default(omit) }}"
+    insecure: "{{ rhvm_insecure | default(true) }}"
+  tags:
+  - always
+
+- ovirt_vm:
+    auth: "{{ ovirt_auth }}"  
+    name: k8s0{{ item }}
+    template: ubnt-18.04-srv-x64v1
+    cluster: Default
+    cpu_cores: 4
+    memory: 8GiB
+    high_availability: true
+    cloud_init:
+      host_name: k8s0{{ item }}.mycloudbr.local
+      custom_script: |
+        write_files:
+        - content: |
+            network:
+              version: 2
+              ethernets:
+                ens3:
+                  addresses:
+                    - 10.254.0.5{{ item }}/24
+                  gateway4: 10.254.0.254
+                  nameservers:
+                    addresses: [10.254.0.254, 8.8.8.8, 8.8.4.4]
+          path: /etc/netplan/50-cloud-init.yaml
+          permissions: '0644'
+      user_name: root
+      root_password: ncc1701
+      authorized_ssh_keys: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCwwZRZQi0M0N/DR+vxaK4B9Mr3qDs/g2VwVENhR0vbw0+fcnTKCBVL0VJYh9GBN05MVmIpyVgpYYmfISuFCsTvZReDjxnMRlTNfPlocQDLFdDb9OSw7ka7ODu2Bq5MQJ3/gSVp2SfJNQqMkX8ZD8sZIdc8hNYv+7oyoKhbCXckB2Io3BOO5zZlmVgnKGMF20Td9j62HEEjrOWa9GEFS6B3hWHMd2zccu+gc7xZa8G5nGeAw776+LZ2Y6iGvqvGn4pKajNhp8DuDF3Lbid2Q6WV9HAzQvGNahLTi4LFIZDGb0i6TeDaVZopYucrFSji8iFVfBTfYDP6cDLNvVm8scHV mmagalha@Z1
+    state: running
+    wait: yes
+  loop: "{{ vm_id }}"
+
+- name: Logout from oVirt
+  ovirt_auth:
+    state: absent
+    ovirt_auth: "{{ ovirt_auth }}"
+  tags:
+  - always      
