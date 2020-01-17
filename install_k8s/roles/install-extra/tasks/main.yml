@@ -1,0 +1,4 @@
+---
+# tasks file for install-extra
+- include: cni.yml
+- include: metallb.yml

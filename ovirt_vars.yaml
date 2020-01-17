@@ -1,0 +1,4 @@
+---
+engine_fqdn: ovirt.mycloudbr.local
+engine_user: admin@internal
+engine_cafile: ./ca.pem

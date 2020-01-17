@@ -9,7 +9,6 @@
 - name: "Kubeadm reset node cluster config"
   command: 
     kubeadm reset --force
-  register: kubeadm_reset_node
 
 - name: "Kubeadm join"
   shell: 
